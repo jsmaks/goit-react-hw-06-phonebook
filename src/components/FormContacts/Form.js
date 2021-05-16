@@ -18,14 +18,20 @@ class Form extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.addContact(this.state);
+    this.checkOnDuplicate(this.props.libraryContacts);
     this.reset();
+  };
+  checkOnDuplicate = (list) => {
+    const nameLowerCase = this.state.name.toLowerCase();
+
+    list.find(({ name }) => name.toLowerCase() === nameLowerCase)
+      ? alert(`${this.state.name} is alredy in contacts`)
+      : this.props.addContact(this.state);
   };
 
   reset = () => {
     this.setState({ name: "", number: "" });
   };
-
 
   render() {
     const { name, number } = this.state;
@@ -75,9 +81,12 @@ Form.propTypes = {
   handleSubmit: PropTypes.func,
 };
 
+const mapStateToProps = (state) => ({
+  libraryContacts: state.contacts.items,
+});
+
 const mapDispatchToProps = (dispatch) => ({
-  addContact: data => dispatch(contactActions.addContact(data)),
-})
+  addContact: (data) => dispatch(contactActions.addContact(data)),
+});
 
-
-export default connect(null, mapDispatchToProps)(Form);
+export default connect(mapStateToProps, mapDispatchToProps)(Form);

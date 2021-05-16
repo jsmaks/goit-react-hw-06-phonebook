@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import contactActions from "../../redux/phonebook/phonebook-actions";
 
-
 const Contacts = ({ libraryContacts, onDelete }) => {
   return (
     <div>
@@ -34,7 +33,15 @@ const getVisibleContacts = (allContacts, filter) => {
     name.toLowerCase().includes(normalizedFilter)
   );
 };
+const mapStateToProps = ({ contacts: { items, filter } }) => ({
+  libraryContacts: getVisibleContacts(items, filter),
+});
 
+const mapDisptachToProps = (dispatch) => ({
+  onDelete: (id) => dispatch(contactActions.deleteContact(id)),
+});
+export default connect(mapStateToProps, mapDisptachToProps)(Contacts);
+//--------------------------------------------------------------------
 // const mapStateToProps = (state) => {
 //   const { filter, items } = state.contacts;
 
@@ -44,12 +51,3 @@ const getVisibleContacts = (allContacts, filter) => {
 //     libraryContacts: visibleContacts,
 //   };
 // };
-
-const mapStateToProps = ({ contacts: { items, filter } }) => ({
-  libraryContacts: getVisibleContacts(items, filter),
-});
-
-const mapDisptachToProps = (dispatch) => ({
-  onDelete: (id) => dispatch(contactActions.deleteContact(id)),
-});
-export default connect(mapStateToProps, mapDisptachToProps)(Contacts);
